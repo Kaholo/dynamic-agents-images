@@ -9,9 +9,14 @@ PUSH=$3
 for filename in dockerfiles/Dockerfile*; do
     IMAGE_REPO_TAG="matankaholo/agent-${filename#"dockerfiles/Dockerfile-"}:${IMAGE_TAG}"
     echo ${IMAGE_REPO_TAG,,}
-    docker build -f $filename -t ${IMAGE_REPO_TAG,,} ${AGENT_REPO_BASE_PATH}
-    if [[ "$PUSH" == "push" ]]
-    then
-        docker push ${IMAGE_REPO_TAG,,}
-    fi
+    docker build -f $filename -t ${IMAGE_REPO_TAG,,} ${AGENT_REPO_BASE_PATH} &
 done
+
+while true; do echo "Waiting for all containers build to finish"; ! ps -afe | grep "[d]ocker build -f dockerfiles" > /dev/null && break; sleep 30; done
+
+if [[ "$PUSH" == "push" ]]
+then
+    for filename in dockerfiles/Dockerfile*; do
+        docker push ${IMAGE_REPO_TAG,,}
+    done
+fi
