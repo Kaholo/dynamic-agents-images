@@ -17,6 +17,7 @@ while true; do echo "Waiting for all containers build to finish"; ! ps -afe | gr
 if [[ "$PUSH" == "push" ]]
 then
     for filename in dockerfiles/Dockerfile*; do
+        IMAGE_REPO_TAG="matankaholo/agent-${filename#"dockerfiles/Dockerfile-"}:${IMAGE_TAG}"
         docker push ${IMAGE_REPO_TAG,,}
     done
 fi
