@@ -5,19 +5,18 @@ set -o pipefail # Causes a pipeline to return the exit status of the last comman
 AGENT_REPO_BASE_PATH=$1
 IMAGE_TAG=$2
 PUSH=$3
+IMAGE_NAME_PREFIX=$4
 
 for filename in dockerfiles/Dockerfile*; do
-    IMAGE_REPO_TAG="matankaholo/agent-${filename#"dockerfiles/Dockerfile-"}:${IMAGE_TAG}"
+    IMAGE_REPO_TAG="matankaholo/${IMAGE_NAME_PREFIX}${filename#"dockerfiles/Dockerfile-"}:${IMAGE_TAG}"
     echo ${IMAGE_REPO_TAG,,}
-    docker build -f $filename -t ${IMAGE_REPO_TAG,,} ${AGENT_REPO_BASE_PATH} &
+    docker build -f $filename -t ${IMAGE_REPO_TAG,,} ${AGENT_REPO_BASE_PATH}
 done
-
-while true; do echo "Waiting for all containers build to finish"; ! ps -afe | grep "[d]ocker build -f dockerfiles" > /dev/null && break; sleep 30; done
 
 if [[ "$PUSH" == "push" ]]
 then
     for filename in dockerfiles/Dockerfile*; do
-        IMAGE_REPO_TAG="matankaholo/agent-${filename#"dockerfiles/Dockerfile-"}:${IMAGE_TAG}"
+        IMAGE_REPO_TAG="matankaholo/${IMAGE_NAME_PREFIX}${filename#"dockerfiles/Dockerfile-"}:${IMAGE_TAG}"
         docker push ${IMAGE_REPO_TAG,,}
     done
 fi
