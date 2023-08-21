@@ -1,6 +1,6 @@
 FROM golang:alpine3.18
 
-RUN apk --no-cache add nodejs npm bash curl git docker-cli
+RUN apk --no-cache add nodejs npm bash curl git docker-cli openssh-client
 
 WORKDIR /twiddlebug
 ADD ./package.json ./package.json
