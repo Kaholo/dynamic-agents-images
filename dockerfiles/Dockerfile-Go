@@ -1,6 +1,9 @@
-FROM golang:alpine3.18
+FROM docker:20.10.12-dind
 
 RUN apk --no-cache add nodejs npm bash curl git docker-cli openssh-client
+
+COPY --from=golang:alpine3.18 /usr/local/go/ /usr/local/go/
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 WORKDIR /twiddlebug
 ADD ./package.json ./package.json
