@@ -1,6 +1,6 @@
 FROM docker:20.10.12-dind
 
-RUN apk --no-cache add nodejs npm bash curl git docker-cli
+RUN apk --no-cache add nodejs npm bash curl git docker-cli openssh-client
 
 WORKDIR /twiddlebug
 ADD ./package.json ./package.json
@@ -17,4 +17,4 @@ ADD ./ ./
 RUN rm -rf ./libs
 RUN rm -rf ./kaholo-agent.conf
 
-CMD nohup sh -c "/usr/local/bin/dockerd-entrypoint.sh dockerd" > dockerd.out 2>&1 & && until docker -H unix:///var/run/docker.sock ps; do sleep 2; done; npm start
+CMD nohup sh -c "/usr/local/bin/dockerd-entrypoint.sh dockerd" > dockerd.out 2>&1 & until docker -H unix:///var/run/docker.sock ps; do sleep 2; done; npm start
