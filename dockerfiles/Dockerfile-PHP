@@ -1,6 +1,6 @@
-FROM php:alpine3.18
+FROM docker:24.0.6-dind-alpine3.18
 
-RUN apk --no-cache add nodejs npm bash curl git docker-cli openssh-client
+RUN apk --no-cache add nodejs npm bash curl git docker-cli openssh-client php
 
 WORKDIR /twiddlebug
 ADD ./package.json ./package.json
@@ -17,4 +17,4 @@ ADD ./ ./
 RUN rm -rf ./libs
 RUN rm -rf ./kaholo-agent.conf
 
-CMD npm start
+CMD nohup sh -c "/usr/local/bin/dockerd-entrypoint.sh dockerd" > dockerd.out 2>&1 & until docker -H unix:///var/run/docker.sock ps; do sleep 2; done; npm start
