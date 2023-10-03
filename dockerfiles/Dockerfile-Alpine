@@ -17,4 +17,6 @@ ADD ./ ./
 RUN rm -rf ./libs
 RUN rm -rf ./kaholo-agent.conf
 
+ENV DOCKER_HOST="tcp://docker:2375"
+
 CMD npm start
